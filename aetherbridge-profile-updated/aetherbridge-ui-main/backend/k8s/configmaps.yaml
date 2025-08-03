@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aetherbridge-config
+  namespace: aetherbridge
+data:
+  # Server Configuration
+  node-env: "production"
+  port: "8000"
+  frontend-url: "https://aetherbridge.com"
+  
+  # Database Configuration
+  mongodb-host: "mongodb"
+  mongodb-port: "27017"
+  mongodb-database: "aetherbridge"
+  
+  # Redis Configuration
+  redis-host: "redis"
+  redis-port: "6379"
+  
+  # Blockchain Configuration
+  fabric-channel-name: "mychannel"
+  fabric-chaincode-name: "credential-contract"
+  fabric-org-name: "Org1"
+  fabric-user-id: "admin"
+  
+  # Ethereum Configuration
+  ethereum-network: "sepolia"
+  nft-contract-abi-path: "./contracts/NFTContract.json"
+  
+  # AI Configuration
+  openai-model: "gpt-4"
+  openai-max-tokens: "2000"
+  
+  # Email Configuration
+  smtp-host: "smtp.gmail.com"
+  smtp-port: "587"
+  smtp-from: "AetherBridge <noreply@aetherbridge.com>"
+  
+  # Storage Configuration
+  aws-region: "us-east-1"
+  aws-s3-bucket: "aetherbridge-storage"
+  aws-s3-bucket-region: "us-east-1"
+  
+  # Monitoring Configuration
+  log-level: "info"
+  log-file-path: "./logs/app.log"
+  
+  # Security Configuration
+  jwt-expires-in: "7d"
+  jwt-refresh-expires-in: "30d"
+  
+  # Rate Limiting
+  rate-limit-window: "900000"
+  rate-limit-max: "100"
+  
+  # File Upload
+  max-file-size: "52428800"
+  allowed-file-types: "jpg,jpeg,png,pdf,doc,docx"
+  
+  # CORS Configuration
+  cors-origin: "https://aetherbridge.com"
+  cors-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  cors-headers: "Content-Type,Authorization,X-Requested-With" 
