@@ -210,6 +210,18 @@ class ApiService {
     });
   }
 
+  async getEnrolledCourses(): Promise<Course[]> {
+    return this.makeRequest('/courses/enrolled');
+  }
+
+  async getCourseProgress(courseId: string): Promise<{ progress: number; completedLessons: number; totalLessons: number }> {
+    return this.makeRequest(`/courses/${courseId}/progress`);
+  }
+
+  async getCourseEquivalencies(courseId: string): Promise<any[]> {
+    return this.makeRequest(`/courses/${courseId}/equivalencies`);
+  }
+
   // Applications
   async submitApplication(application: {
     transcripts: File[];
