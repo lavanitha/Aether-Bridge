@@ -56,7 +56,13 @@ app.use('/api/', limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl) or any localhost port during development
+    if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, true); // You can restrict specific origins in production
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
