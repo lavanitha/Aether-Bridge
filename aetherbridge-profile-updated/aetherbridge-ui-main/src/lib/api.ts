@@ -152,7 +152,9 @@ class ApiService {
 
   private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
     const token = await this.getAuthToken();
-    const url = `${API_BASE_URL}${endpoint}`;
+    // Ensure endpoint starts with "/api" to match backend routes
+    const normalizedEndpoint = endpoint.startsWith('/api') ? endpoint : `/api${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    const url = `${API_BASE_URL}${normalizedEndpoint}`;
     
     const config: RequestInit = {
       headers: {
@@ -169,7 +171,12 @@ class ApiService {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
     
-    return response.json();
+    // Unwrap common { success, data } envelope if present
+    const result = await response.json();
+    if (result && typeof result === 'object' && 'data' in result) {
+      return result.data;
+    }
+    return result;
   }
 
   // User Management
@@ -234,7 +241,7 @@ class ApiService {
     formData.append('targetProgram', application.targetProgram);
 
     const token = await this.getAuthToken();
-    const response = await fetch(`${API_BASE_URL}/applications`, {
+    const response = await fetch(`${API_BASE_URL}/api/applications`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
