@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aetherbridge-backend
+  namespace: aetherbridge
+  labels:
+    app: aetherbridge-backend
+    version: v1.0.0
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: aetherbridge-backend
+  template:
+    metadata:
+      labels:
+        app: aetherbridge-backend
+        version: v1.0.0
+    spec:
+      containers:
+      - name: aetherbridge-backend
+        image: aetherbridge-backend:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "8000"
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: mongodb-uri
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: redis-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: jwt-secret
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: openai-api-key
+        - name: ETHEREUM_PROVIDER_URL
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: ethereum-provider-url
+        - name: ETHEREUM_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: ethereum-private-key
+        - name: SMTP_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: aetherbridge-config
+              key: smtp-host
+        - name: SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: smtp-user
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aetherbridge-secrets
+              key: smtp-password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        - name: wallet
+          mountPath: /app/wallet
+        - name: config
+          mountPath: /app/config
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: wallet
+        persistentVolumeClaim:
+          claimName: aetherbridge-wallet-pvc
+      - name: config
+        configMap:
+          name: aetherbridge-config
+      imagePullSecrets:
+      - name: aetherbridge-registry-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001 

@@ -1,0 +1,92 @@
+{
+  "name": "aetherbridge-network",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Org1",
+    "credentialStore": {
+      "path": "./wallet",
+      "cryptoStore": {
+        "path": "./wallet"
+      }
+    }
+  },
+  "channels": {
+    "mychannel": {
+      "orderers": [
+        "orderer.aetherbridge.com"
+      ],
+      "peers": {
+        "peer0.org1.aetherbridge.com": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        },
+        "peer1.org1.aetherbridge.com": {
+          "endorsingPeer": false,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": false
+        }
+      }
+    }
+  },
+  "organizations": {
+    "Org1": {
+      "mspid": "Org1MSP",
+      "peers": [
+        "peer0.org1.aetherbridge.com",
+        "peer1.org1.aetherbridge.com"
+      ],
+      "certificateAuthorities": [
+        "ca.org1.aetherbridge.com"
+      ]
+    }
+  },
+  "orderers": {
+    "orderer.aetherbridge.com": {
+      "url": "grpcs://orderer.aetherbridge.com:7050",
+      "tlsCACerts": {
+        "path": "./config/crypto-config/ordererOrganizations/aetherbridge.com/orderers/orderer.aetherbridge.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.aetherbridge.com",
+        "hostnameOverride": "orderer.aetherbridge.com"
+      }
+    }
+  },
+  "peers": {
+    "peer0.org1.aetherbridge.com": {
+      "url": "grpcs://peer0.org1.aetherbridge.com:7051",
+      "tlsCACerts": {
+        "path": "./config/crypto-config/peerOrganizations/org1.aetherbridge.com/peers/peer0.org1.aetherbridge.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.org1.aetherbridge.com",
+        "hostnameOverride": "peer0.org1.aetherbridge.com"
+      }
+    },
+    "peer1.org1.aetherbridge.com": {
+      "url": "grpcs://peer1.org1.aetherbridge.com:8051",
+      "tlsCACerts": {
+        "path": "./config/crypto-config/peerOrganizations/org1.aetherbridge.com/peers/peer1.org1.aetherbridge.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer1.org1.aetherbridge.com",
+        "hostnameOverride": "peer1.org1.aetherbridge.com"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca.org1.aetherbridge.com": {
+      "url": "https://ca.org1.aetherbridge.com:7054",
+      "caName": "ca-org1",
+      "tlsCACerts": {
+        "path": "./config/crypto-config/peerOrganizations/org1.aetherbridge.com/ca/ca.org1.aetherbridge.com-cert.pem"
+      },
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+} 
